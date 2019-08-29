@@ -18,7 +18,6 @@ module.exports = {
 	handler: async (argv) =>
 	{
 		if (!argv.message.guild.available) { return; }
-		console.log(argv.message.guild.id);
 
 		const {rows, count} = await argv.application.database.models.image.findAndCountAll({
 			where: {
@@ -28,7 +27,6 @@ module.exports = {
 			offset: argv.page * argv.count,
 			limit: argv.count,
 		});
-		console.log(rows, count);
 		const entries = rows.map((model) => model.name);
 		await argv.message.channel.send(
 			entries.length <= 0
