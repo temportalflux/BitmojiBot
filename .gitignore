@@ -1,0 +1,9 @@
+node_modules/
+secret.json
+Files
+tips.json
+assets
+tipgenerator.sqlite
+*.db
+*.lnk
+secrets.json
