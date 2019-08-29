@@ -2,6 +2,9 @@
 	"name": "tipgenerator",
 	"version": "1.0.0",
 	"description": "",
+	"author": "temportalflux",
+	"repository": "temportalflux/BitmojiBot",
+	"license": "ISC",
 	"main": "index.js",
 	"dependencies": {
 		"canvas": "^2.6.0",
@@ -23,7 +26,5 @@
 		"start": "npx nodemon --inspect ./src/index.js",
 		"inviteBot": "node ./node_modules/discordbot-lib/inviteBot.js ./secrets.json",
 		"inspect": "node ./node_modules/discordbot-lib/inspect.js"
-	},
-	"author": "temportalflux",
-	"license": "ISC"
+	}
 }
