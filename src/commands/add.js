@@ -59,7 +59,7 @@ module.exports = {
 				await argv.message.reply(`There is already an image with the name "${imageRefData.name}".`);
 				return;
 			}
-			await argv.application.database.models.imageReference.findOrCreate(imageRefData);
+			await argv.application.database.models.imageReference.create(imageRefData);
 			await argv.message.reply(`Your image has been saved as "${imageRefData.name}".`);
 		}
 	}

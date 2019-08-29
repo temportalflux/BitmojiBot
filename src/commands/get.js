@@ -1,5 +1,4 @@
 const Sql = require('sequelize');
-const Discord = require('discord.js');
 
 module.exports = {
 	command: 'get <name>',
