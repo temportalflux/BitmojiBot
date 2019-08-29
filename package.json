@@ -24,8 +24,9 @@
 		"open": "^6.4.0"
 	},
 	"scripts": {
-		"start": "npx nodemon --inspect ./src/index.js",
-		"inviteBot": "node ./node_modules/discordbot-lib/inviteBot.js ./secrets.json",
-		"inspect": "node ./node_modules/discordbot-lib/inspect.js"
+		"debug": "npx nodemon --inspect ./src/index.js",
+		"start": "pm2 start ./src/index.js --name BitmojiBot --log prod.log --time",
+		"monitor": "pm2 monit",
+		"stop": "pm2 delete BitmojiBot"
 	}
 }

@@ -17,7 +17,7 @@ module.exports = {
 		const oldName = `${argv.nameOld}`.trim().replace(' ', '-');
 		const newName = `${argv.nameNew}`.trim().replace(' ', '-');
 		
-		const srcEntry = await argv.application.database.models.imageReference.findOne({
+		const srcEntry = await argv.application.database.models.image.findOne({
 			where: {
 				guild: { [Sql.Op.eq]: argv.message.guild.id },
 				name: { [Sql.Op.eq]: oldName },
@@ -29,7 +29,7 @@ module.exports = {
 			return;
 		}
 
-		const destEntry = await argv.application.database.models.imageReference.findOne({
+		const destEntry = await argv.application.database.models.image.findOne({
 			where: {
 				guild: { [Sql.Op.eq]: argv.message.guild.id },
 				name: { [Sql.Op.eq]: newName },

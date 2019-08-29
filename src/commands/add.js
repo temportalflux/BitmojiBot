@@ -48,7 +48,7 @@ module.exports = {
 
 		if (imageRefData)
 		{
-			const existingEntry = await argv.application.database.models.imageReference.findOne({
+			const existingEntry = await argv.application.database.models.image.findOne({
 				where: {
 					guild: { [Sql.Op.eq]: imageRefData.guild },
 					name: { [Sql.Op.eq]: imageRefData.name },
@@ -59,7 +59,7 @@ module.exports = {
 				await argv.message.reply(`There is already an image with the name "${imageRefData.name}".`);
 				return;
 			}
-			await argv.application.database.models.imageReference.create(imageRefData);
+			await argv.application.database.models.image.create(imageRefData);
 			await argv.message.reply(`Your image has been saved as "${imageRefData.name}".`);
 		}
 	}

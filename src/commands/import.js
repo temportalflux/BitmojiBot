@@ -55,24 +55,27 @@ module.exports = {
 		const entriesToAdd = [];
 		for (const entry of data)
 		{
-			const instance = await argv.application.database.models.imageReference.findOne({
+			const instance = await argv.application.database.models.image.findOne({
 				where: {
-					guild: argv.message.guild.id,
-					name: entry.name,
-					url: entry.url,
+					guild: { [Sql.Op.eq]: argv.message.guild.id },
+					name: { [Sql.Op.eq]: entry.name },
 				},
 				attributes: ['name', 'url']
 			});
 			if (instance === null)
 			{
-				entriesToAdd.push(entry);
+				entriesToAdd.push({
+					guild: argv.message.guild.id,
+					name: entry.name,
+					url: entry.url,
+				});
 			}
 		}
 		if (entriesToAdd.length > 0)
 		{
 			try
 			{
-				await argv.application.database.models.imageReference.bulkCreate(entriesToAdd);
+				await argv.application.database.models.image.bulkCreate(entriesToAdd);
 			}
 			catch (errors)
 			{

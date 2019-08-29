@@ -1,3 +1,3 @@
 module.exports = {
-	imageReference: { attributes: require('./ModelImageRef.js') },
+	image: { attributes: require('./ModelImageRef.js') },
 };

@@ -9,7 +9,7 @@ module.exports = {
 	{
 		if (!argv.message.guild.available) { return; }
 
-		const {rows, count} = await argv.application.database.models.imageReference.findAndCountAll({
+		const {rows, count} = await argv.application.database.models.image.findAndCountAll({
 			where: {
 				guild: { [Sql.Op.eq]: argv.message.guild.id },
 			},

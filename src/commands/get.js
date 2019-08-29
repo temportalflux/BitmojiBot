@@ -14,7 +14,7 @@ module.exports = {
 			return;
 		}
 		const entryName = argv.name.trim().replace(' ', '-');
-		const entry = await argv.application.database.models.imageReference.findOne({
+		const entry = await argv.application.database.models.image.findOne({
 			where: {
 				guild: { [Sql.Op.eq]: argv.message.guild.id },
 				name: { [Sql.Op.eq]: entryName },
