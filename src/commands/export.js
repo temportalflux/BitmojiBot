@@ -9,18 +9,17 @@ module.exports = {
 	{
 		if (!argv.message.guild.available) { return; }
 
-		const {rows, count} = await argv.application.database.models.image.findAndCountAll({
-			where: {
-				guild: { [Sql.Op.eq]: argv.message.guild.id },
-			},
-			attributes: ['name', 'url'],
-		});
-		
-		const exportedJsonString = JSON.stringify(rows.map((model) => model.toJSON()));
+		const exportedObject = await argv.application.database.export(
+			'image',
+			{
+				where: { guild: { [Sql.Op.eq]: argv.message.guild.id } },
+				attributes: ['name', 'url'],
+			}
+		);
 		await argv.message.reply("Here is your exported data file", {
 			files: [
 				new Discord.Attachment(
-					Buffer.from(exportedJsonString),
+					Buffer.from(JSON.stringify(exportedObject)),
 					`${argv.message.guild.name.replace(' ', '-').toLowerCase()}.json`
 				)
 			]

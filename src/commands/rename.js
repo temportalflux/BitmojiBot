@@ -17,33 +17,34 @@ module.exports = {
 		const oldName = `${argv.nameOld}`.trim().replace(' ', '-');
 		const newName = `${argv.nameNew}`.trim().replace(' ', '-');
 		
-		const srcEntry = await argv.application.database.models.image.findOne({
-			where: {
-				guild: { [Sql.Op.eq]: argv.message.guild.id },
-				name: { [Sql.Op.eq]: oldName },
-			}
-		});
-		if (!srcEntry)
+		try
 		{
-			await argv.message.reply(`There is no image with the name "${oldName}".`);
+			await argv.application.database.replaceField(
+				'image',
+				{ name: [oldName, newName] },
+				{ guild: argv.message.guild.id }
+			);
+		}
+		catch(e)
+		{
+			switch (e.code)
+			{
+				case 0:
+					console.error(e.message);
+					break;
+				case 1:
+					await argv.message.reply(e.message);
+					break;
+				case 2:
+					await argv.message.reply(e.message);
+					break;
+				default:
+					console.error(e);
+					break;
+			}
 			return;
 		}
-
-		const destEntry = await argv.application.database.models.image.findOne({
-			where: {
-				guild: { [Sql.Op.eq]: argv.message.guild.id },
-				name: { [Sql.Op.eq]: newName },
-			}
-		});
-		if (destEntry)
-		{
-			await argv.message.reply(`There is already an image with the name "${newName}".`);
-			return;
-		}
-		await srcEntry.update(
-			{ name: newName },
-			{ fields: ['name'] }
-		);
+		
 		await argv.message.reply(`The image formerly named "${oldName}" is now named "${newName}".`);
 	}
 };

@@ -19,20 +19,15 @@ module.exports = {
 	{
 		if (!argv.message.guild.available) { return; }
 
-		const {rows, count} = await argv.application.database.models.image.findAndCountAll({
-			where: {
-				guild: { [Sql.Op.eq]: argv.message.guild.id },
-			},
-			attributes: ['name'],
-			offset: argv.page * argv.count,
-			limit: argv.count,
-		});
-		const entries = rows.map((model) => model.name);
-		await argv.message.channel.send(
-			entries.length <= 0
-			? "There are no entries here"
-			: entries.reduce((accum, name) => `${accum}\n- ${name}`,
-			`Page ${argv.page} (${argv.page * argv.count + 1} - ${(argv.page + 1) * argv.count}): (${count} total)`)
+		const text = await argv.application.database.listAsText(
+			'image',
+			{ guild: { [Sql.Op.eq]: argv.message.guild.id } },
+			['name'],
+			(model) => model.name,
+			argv.count,
+			argv.page
 		);
+
+		await argv.message.channel.send(text);
 	}
 };

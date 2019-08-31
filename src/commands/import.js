@@ -47,41 +47,20 @@ module.exports = {
 			return;
 		}
 
-		const result = await fetch(fileUrl, {
-			method: 'GET'
-		});
+		const result = await fetch(fileUrl, { method: 'GET' });
 		const data = await result.json();
 
-		const entriesToAdd = [];
-		for (const entry of data)
-		{
-			const instance = await argv.application.database.models.image.findOne({
-				where: {
-					guild: { [Sql.Op.eq]: argv.message.guild.id },
-					name: { [Sql.Op.eq]: entry.name },
-				},
-				attributes: ['name', 'url']
-			});
-			if (instance === null)
-			{
-				entriesToAdd.push({
-					guild: argv.message.guild.id,
-					name: entry.name,
-					url: entry.url,
-				});
-			}
-		}
-		if (entriesToAdd.length > 0)
-		{
-			try
-			{
-				await argv.application.database.models.image.bulkCreate(entriesToAdd);
-			}
-			catch (errors)
-			{
-				console.error(errors);
-			}
-		}
-
+		await argv.application.database.importWithFilter(
+			'image', data,
+			(entry) => ({
+				guild: { [Sql.Op.eq]: argv.message.guild.id },
+				name: { [Sql.Op.eq]: entry.name },
+			}),
+			(entry) => ({
+				guild: argv.message.guild.id,
+				name: entry.name,
+				url: entry.url,
+			})
+		);
 	}
 };
