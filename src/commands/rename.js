@@ -27,15 +27,12 @@ module.exports = {
 		}
 		catch(e)
 		{
-			switch (e.code)
+			switch (e.error)
 			{
-				case 0:
-					console.error(e.message);
-					break;
-				case 1:
+				case 'InvalidSourceEntry':
 					await argv.message.reply(e.message);
 					break;
-				case 2:
+				case 'DestinationEntryAlreadyExists':
 					await argv.message.reply(e.message);
 					break;
 				default:

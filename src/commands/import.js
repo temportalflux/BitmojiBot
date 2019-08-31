@@ -1,12 +1,6 @@
-const Sql = require('sequelize');
-const Discord = require('discord.js');
-const http = require('http');
-const {promisify} = require('util');
-const lodash = require('lodash');
+const { Utils } = require('discordbot-lib');
 const path = require('path');
-
-//const fetch = promisify(http.request);
-var fetch = require('node-fetch');
+const fetch = require('node-fetch');
 
 module.exports = {
 	command: 'import [url]',
@@ -16,51 +10,44 @@ module.exports = {
 	{
 		if (!argv.message.guild.available) { return; }
 
-		var fileUrl = undefined;
-		const attachmentList = lodash.toPairs(argv.message.attachments);
-		// No attachment, must have link
-		if (attachmentList.length <= 0)
+		try
 		{
-			if (!argv.url)
+			const fileInfo = Utils.Messages.getFileUrl(argv, requiresName = false);
+
+			const extension = path.extname(fileInfo.url);
+			if (extension !== '.json')
 			{
-				await argv.message.reply("If you do not attach an file, you must provide a link.");
+				await argv.message.reply("The provided file must be a json file.");
 				return;
 			}
-			fileUrl = argv.url;
-		}
-		// Cannot have more than 1 file in an upload
-		else if (attachmentList.length > 1)
-		{
-			await argv.message.reply("Please provide 1 and only 1 file.");
-			return;
-		}
-		else
-		{
-			const attachment = attachmentList.shift()[1];
-			fileUrl = attachment.url;
-		}
 
-		const extension = path.extname(fileUrl);
-		if (extension !== '.json')
-		{
-			await argv.message.reply("The provided file must be a json file.");
-			return;
+			const result = await fetch(fileInfo.url, { method: 'GET' });
+			const data = await result.json();
+
+			await argv.application.database.importWithFilter(
+				'image', data,
+				(entry) => Utils.Sql.createWhereFilter({
+					guild: argv.message.guild.id,
+					name: entry.name,
+				}),
+				(entry) => ({
+					guild: argv.message.guild.id,
+					name: entry.name,
+					url: entry.url,
+				})
+			);
 		}
-
-		const result = await fetch(fileUrl, { method: 'GET' });
-		const data = await result.json();
-
-		await argv.application.database.importWithFilter(
-			'image', data,
-			(entry) => ({
-				guild: { [Sql.Op.eq]: argv.message.guild.id },
-				name: { [Sql.Op.eq]: entry.name },
-			}),
-			(entry) => ({
-				guild: argv.message.guild.id,
-				name: entry.name,
-				url: entry.url,
-			})
-		);
+		catch (e)
+		{
+			switch (e.error)
+			{
+				case 'TooManyAttachments':
+				case 'MissingAttachment':
+					await argv.message.reply(e.message);
+				default:
+					console.error(e);
+					break;
+			}
+		}
 	}
 };
