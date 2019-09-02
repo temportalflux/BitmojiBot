@@ -1,7 +1,8 @@
 {
-	"name": "tipgenerator",
+	"name": "bitmojibot",
+	"serviceName": "DiscordBot-BitmojiBot",
 	"version": "1.0.0",
-	"description": "",
+	"description": "A DiscordBot to respond to certain commands with stored images.",
 	"author": "temportalflux",
 	"repository": "temportalflux/BitmojiBot",
 	"license": "ISC",
@@ -24,9 +25,8 @@
 		"open": "^6.4.0"
 	},
 	"scripts": {
-		"debug": "npx nodemon --inspect ./src/index.js",
-		"start": "pm2 start ./src/index.js --name BitmojiBot --log prod.log --time",
-		"monitor": "pm2 monit",
-		"stop": "pm2 delete BitmojiBot"
+		"debug": "npx nodemon --inspect ./src/debug.js",
+		"installService": "node ./src/service/install.js",
+		"uninstallService": "node ./src/service/uninstall.js"
 	}
 }

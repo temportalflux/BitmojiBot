@@ -1,13 +1,11 @@
 const DBL = require('discordbot-lib');
 const Secrets = require('../secrets.json');
 const path = require('path');
-const lodash = require('lodash');
-const Sql = require('sequelize');
 
 class BitmojiBot extends DBL.Application
 {
 
-	constructor()
+	constructor(withService)
 	{
 		super({
 			applicationName: 'bitmojibot',
@@ -17,6 +15,10 @@ class BitmojiBot extends DBL.Application
 				directory: path.join(__dirname, 'commands'),
 			},
 			databaseModels: require('./models/index.js'),
+			databaseLogging: false,
+			logger: withService
+				? DBL.Service.Logger(require('../package.json').serviceName)
+				: undefined,
 		});
 	}
 
@@ -27,11 +29,11 @@ class BitmojiBot extends DBL.Application
 		bot.on('removedFromGuild', this.onRemovedFromGuild.bind(this));
 	}
 
-	onRemovedFromGuild(guild)
+	async onRemovedFromGuild(guild)
 	{
-		// TODO: Remove data regarding the guild
+		await this.database.at('image').destroy(DBL.Utils.Sql.createSimpleOptions({ guild: guild.id }));
 	}
 
 }
 
-new BitmojiBot();
+module.exports = BitmojiBot;

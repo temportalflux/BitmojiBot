@@ -1,5 +1,6 @@
 const lodash = require('lodash');
-const Command = require('discordbot-lib').TemplateCommands.list;
+const { TemplateCommands } = require('discordbot-lib');
+const Command = TemplateCommands.list;
 
 const builder = lodash.assign(
 	Command.builder, {
