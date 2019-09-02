@@ -26,6 +26,8 @@
 	},
 	"scripts": {
 		"debug": "npx nodemon --inspect ./src/debug.js",
+		"inviteBot": "node ./node_modules/discordbot-lib/inviteBot.js ./secrets.json",
+		"inspect": "node ./node_modules/discordbot-lib/inspect.js",
 		"installService": "node ./src/service/install.js",
 		"uninstallService": "node ./src/service/uninstall.js"
 	}

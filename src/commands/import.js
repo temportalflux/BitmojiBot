@@ -20,5 +20,8 @@ module.exports = {
 			name: entry.name,
 			url: entry.url,
 		}),
+		onSuccess: async (argv) => {
+			await argv.message.reply('I have imported the requested images :)');
+		},
 	}),
 };
