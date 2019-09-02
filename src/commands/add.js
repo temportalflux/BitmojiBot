@@ -1,9 +1,15 @@
 const lodash = require('lodash');
-const { TemplateCommands } = require('discordbot-lib');
+const Command = require('discordbot-lib').TemplateCommands.addFile;
 
-module.exports = lodash.assign(
-	{
-		desc: 'Submit a image for usage via the get command.',
-	},
-	TemplateCommands.addFile('add', 'image')
+const builder = lodash.assign(
+	Command.builder, {
+		// No custom params
+	}
 );
+
+module.exports = {
+	command: TemplateCommands.helpers.createCommand('add', builder),
+	desc: 'Submit a image for usage via the get command.',
+	builder: builder,
+	handler: Command.funcTemplate('image', ['name']),
+};

@@ -1,28 +1,17 @@
-const Sql = require('sequelize');
-const Discord = require('discord.js');
+const lodash = require('lodash');
+const Command = require('discordbot-lib').TemplateCommands.export;
+
+const builder = lodash.assign(
+	Command.builder, {
+		// No custom params
+	}
+);
 
 module.exports = {
-	command: 'export',
+	command: TemplateCommands.helpers.createCommand('export', builder),
 	desc: 'Exports a json representation of all images associated with this server.',
-	builder: {},
-	handler: async (argv) =>
-	{
-		if (!argv.message.guild.available) { return; }
-
-		const exportedObject = await argv.application.database.export(
-			'image',
-			{
-				where: { guild: { [Sql.Op.eq]: argv.message.guild.id } },
-				attributes: ['name', 'url'],
-			}
-		);
-		await argv.message.reply("Here is your exported data file", {
-			files: [
-				new Discord.Attachment(
-					Buffer.from(JSON.stringify(exportedObject)),
-					`${argv.message.guild.name.replace(' ', '-').toLowerCase()}.json`
-				)
-			]
-		});
-	}
+	builder: builder,
+	handler: Command.funcTemplate('image', ['name', 'url'],
+		(argv) => argv.message.guild.name.replace(' ', '-').toLowerCase()
+	),
 };

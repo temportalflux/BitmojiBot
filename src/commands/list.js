@@ -1,16 +1,17 @@
 const lodash = require('lodash');
-const { TemplateCommands } = require('discordbot-lib');
+const Command = require('discordbot-lib').TemplateCommands.list;
 
-module.exports = lodash.assign(
-	{
-		desc: 'Lists all of the images for the server.',
-	},
-	TemplateCommands.list(
-		{
-			name: 'list',
-			options: '',
-			builderBlock: {},
-		},
-		'image', ['name'], (model) => model.name
-	)
+const builder = lodash.assign(
+	Command.builder, {
+		// No custom params
+	}
 );
+
+module.exports = {
+	command: TemplateCommands.helpers.createCommand('list', builder),
+	desc: 'Lists all of the images for the server.',
+	builder: builder,
+	handler: Command.funcTemplate('image',
+		['name'], (model) => model.name
+	),
+};

@@ -1,47 +1,15 @@
-const Sql = require('sequelize');
+const lodash = require('lodash');
+const Command = require('discordbot-lib').TemplateCommands.rename;
+
+const builder = lodash.assign(
+	Command.builder, {
+		// No custom params
+	}
+);
 
 module.exports = {
-	command: 'rename <nameOld> <nameNew>',
+	command: TemplateCommands.helpers.createCommand('rename', builder),
 	desc: 'Rename an image to a new unique name.',
-	builder: (yargs) => yargs,
-	handler: async (argv) =>
-	{
-		if (!argv.message.guild.available) { return; }
-
-		if (!argv.nameOld || !argv.nameNew)
-		{
-			await argv.message.reply("Please provide an image names so I can modify the correct entry.");
-			return;
-		}
-
-		const oldName = `${argv.nameOld}`.trim().replace(' ', '-');
-		const newName = `${argv.nameNew}`.trim().replace(' ', '-');
-		
-		try
-		{
-			await argv.application.database.replaceField(
-				'image',
-				{ name: [oldName, newName] },
-				{ guild: argv.message.guild.id }
-			);
-		}
-		catch(e)
-		{
-			switch (e.error)
-			{
-				case 'InvalidSourceEntry':
-					await argv.message.reply(e.message);
-					break;
-				case 'DestinationEntryAlreadyExists':
-					await argv.message.reply(e.message);
-					break;
-				default:
-					console.error(e);
-					break;
-			}
-			return;
-		}
-		
-		await argv.message.reply(`The image formerly named "${oldName}" is now named "${newName}".`);
-	}
+	builder: builder,
+	handler: Command.funcTemplate('image'),
 };
